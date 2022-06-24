@@ -1,0 +1,6 @@
+apiVersion: webapp.simpletest.com/v1alpha1
+kind: Webapp
+metadata:
+  name: webapp-sample
+spec:
+  # TODO(user): Add fields here

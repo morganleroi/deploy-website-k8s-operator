@@ -6,4 +6,14 @@ plugins:
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: deploy-website-k8s-operator
 repo: github.com/morganleroi/deploy-website-k8s-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: simpletest.com
+  group: webapp
+  kind: Webapp
+  path: github.com/morganleroi/deploy-website-k8s-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"

@@ -1,0 +1,9 @@
+domain: simpletest.com
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: deploy-website-k8s-operator
+repo: github.com/morganleroi/deploy-website-k8s-operator
+version: "3"

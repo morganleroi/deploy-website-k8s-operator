@@ -28,8 +28,12 @@ type WebappSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Webapp. Edit webapp_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	//+kubebuilder:validation:Required
+	AzureSubscriptionId string `json:"azuresubscriptionid"`
+	//+kubebuilder:validation:Required
+	StorageAccountName string `json:"storageaccountname"`
+	//+kubebuilder:validation:Required
+	WebappVersion string `json:"webappversion"`
 }
 
 // WebappStatus defines the observed state of Webapp

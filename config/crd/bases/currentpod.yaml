@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2022-07-06T12:03:46Z"
+  generateName: guestbook-ui-76f97c94c-
+  labels:
+    app: guestbook-ui
+    pod-template-hash: 76f97c94c
+  name: guestbook-ui-76f97c94c-s9krr
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: guestbook-ui-76f97c94c
+    uid: d39a9c73-12dd-4728-bfcd-62d4f77a3988
+  resourceVersion: "364734"
+  uid: 9eadc3a5-df02-4267-a155-a55025606b01
+spec:
+  containers:
+  - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
+    imagePullPolicy: IfNotPresent
+    name: guestbook-ui
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-27v5z
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: docker-desktop
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-27v5z
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-06T12:03:46Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-06T12:04:04Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-06T12:04:04Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2022-07-06T12:03:46Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://babc636751616a0a1d1c890ebcf518f9c24e7360f166ca1c1813b527c35b8ca3
+    image: gcr.io/heptio-images/ks-guestbook-demo:0.2
+    imageID: docker-pullable://gcr.io/heptio-images/ks-guestbook-demo@sha256:e6fbd640820c32c847a53b93eb7b404f25ffb56df1cc16d0711eec3a405d6509
+    lastState: {}
+    name: guestbook-ui
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2022-07-06T12:04:03Z"
+  hostIP: 192.168.65.4
+  phase: Running
+  podIP: 10.1.2.15
+  podIPs:
+  - ip: 10.1.2.15
+  qosClass: BestEffort
+  startTime: "2022-07-06T12:03:46Z"

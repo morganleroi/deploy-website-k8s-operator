@@ -15,7 +15,24 @@ spec:
     singular: webapp
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - description: The status of the last sync
+      jsonPath: .status.status
+      name: Status
+      type: string
+    - description: The version currently deployed
+      jsonPath: .status.deployed-version
+      name: Current Deployed Version
+      type: string
+    - description: The desired version
+      jsonPath: .spec.webappversion
+      name: Desired Version
+      type: string
+    - description: Potential error during reconciliation
+      jsonPath: .status.error
+      name: Error
+      type: string
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: Webapp is the Schema for the webapps API
@@ -49,15 +66,22 @@ spec:
           status:
             description: WebappStatus defines the observed state of Webapp
             properties:
-              nodes:
+              deployed-version:
+                type: string
+              error:
+                type: string
+              last-update:
+                type: string
+              status:
                 description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
                   of cluster Important: Run "make" to regenerate code after modifying
                   this file'
-                items:
-                  type: string
-                type: array
+                type: string
             required:
-            - nodes
+            - deployed-version
+            - error
+            - last-update
+            - status
             type: object
         type: object
     served: true

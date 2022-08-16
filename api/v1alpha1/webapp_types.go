@@ -25,15 +25,26 @@ import (
 
 // WebappSpec defines the desired state of Webapp
 type WebappSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
 	//+kubebuilder:validation:Required
-	AzureSubscriptionId string `json:"azuresubscriptionid"`
+	AzureTenantId string `json:"azureTenantId"`
 	//+kubebuilder:validation:Required
-	StorageAccountName string `json:"storageaccountname"`
+	AzureSpnId string `json:"azureSpnId"`
+	//+kubebuilder: validation:Required
+	AzureSpnSecret string `json:"azureSpnSecret"`
 	//+kubebuilder:validation:Required
-	WebappVersion string `json:"webappversion"`
+	StorageName string `json:"storageName"`
+	// +kubebuilder: default:=$web
+	ContainerName string `json:"containerName"`
+	// +kubebuilder:default:=index.html
+	FileNameToCheck string `json:"filenameToCheck"`
+	// +kubebuilder: default:=version
+	BlobTagKey string `json:"blobTagKey"`
+	//+kubebuilder:validation: Required
+	VersionToDeploy string `json:"versionToDeploy"`
+	//+kubebuilder:validation:Required
+	PackageStorageName string `json:"packageStorageName"`
+	// +kubebuilder:default:=packages
+	PackageContainerName string `json:"packageContainerName"`
 }
 
 // WebappStatus defines the observed state of Webapp

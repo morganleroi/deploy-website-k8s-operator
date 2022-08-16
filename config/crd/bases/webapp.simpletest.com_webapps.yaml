@@ -52,16 +52,39 @@ spec:
           spec:
             description: WebappSpec defines the desired state of Webapp
             properties:
-              azuresubscriptionid:
+              azureSpnId:
                 type: string
-              storageaccountname:
+              azureSpnSecret:
                 type: string
-              webappversion:
+              azureTenantId:
+                type: string
+              blobTagKey:
+                type: string
+              containerName:
+                type: string
+              filenameToCheck:
+                default: index.html
+                type: string
+              packageContainerName:
+                default: packages
+                type: string
+              packageStorageName:
+                type: string
+              storageName:
+                type: string
+              versionToDeploy:
                 type: string
             required:
-            - azuresubscriptionid
-            - storageaccountname
-            - webappversion
+            - azureSpnId
+            - azureSpnSecret
+            - azureTenantId
+            - blobTagKey
+            - containerName
+            - filenameToCheck
+            - packageContainerName
+            - packageStorageName
+            - storageName
+            - versionToDeploy
             type: object
           status:
             description: WebappStatus defines the observed state of Webapp

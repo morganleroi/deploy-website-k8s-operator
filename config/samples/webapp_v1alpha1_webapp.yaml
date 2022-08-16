@@ -5,7 +5,10 @@ metadata:
   labels:
     app: guestbook-ui
 spec:
-  storageaccountname: "test-storage-account"
-  azuresubscriptionid: "1234567"
-  webappversion: "v1.2.6"
+  azureTenantId: "XXX"
+  azureSpnId: "XXXX"
+  azureSpnSecret: "XXXX"
+  storageName: "myTargetStorage"
+  versionToDeploy: "v1.2.3.master"
+  packageStorageName: "myPackageStorage"
 

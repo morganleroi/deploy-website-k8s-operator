@@ -19,8 +19,8 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"github.com/morganleroi/AzBlobStorage/deploy"
 	webappv1alpha1 "github.com/morganleroi/deploy-website-k8s-operator/api/v1alpha1"
+	"github.com/morganleroi/deploy-website-k8s-operator/controllers/deploy"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -47,11 +47,28 @@ func (r *WebappReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	err := r.Get(ctx, req.NamespacedName, webAppCrd)
 	log.Log.Info("---------------------------")
 	log.Log.Info("Request name", "WebappVersion", req.Name)
-	log.Log.Info("Parameter", "AzureSubscriptionId", webAppCrd.Spec.AzureSubscriptionId)
-	log.Log.Info("Parameter", "StorageAccountName", webAppCrd.Spec.StorageAccountName)
-	log.Log.Info("Parameter", "WebappVersion", webAppCrd.Spec.WebappVersion)
 
-	deployedPackage, err := deploy.GetDeployedPackage(webAppCrd.Spec.StorageAccountName, "XXX")
+	deploymentParameters := deploy.Parameters{
+		AzureCredential: &deploy.AzureCredential{
+			TenantId:  &webAppCrd.Spec.AzureTenantId,
+			SpnId:     &webAppCrd.Spec.AzureSpnId,
+			SpnSecret: &webAppCrd.Spec.AzureSpnSecret,
+		},
+		StorageName:     &webAppCrd.Spec.StorageName,
+		ContainerName:   &webAppCrd.Spec.ContainerName,
+		FileNameToCheck: &webAppCrd.Spec.FileNameToCheck,
+		BlobTagKey:      &webAppCrd.Spec.BlobTagKey,
+		VersionToDeploy: &webAppCrd.Spec.VersionToDeploy,
+		Package: &deploy.Package{
+			StorageName:   &webAppCrd.Spec.PackageStorageName,
+			ContainerName: &webAppCrd.Spec.PackageContainerName,
+		},
+	}
+
+	fmt.Println(deploymentParameters)
+
+	err = deploy.StartDeployment(deploymentParameters)
+
 	dateNow := time.Now().Format(time.Layout)
 	if err != nil {
 		log.Log.Info(fmt.Sprintf("Fail to reconcile (%s) %s - %s", dateNow, req.Name, err))
@@ -62,7 +79,7 @@ func (r *WebappReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		log.Log.Info(fmt.Sprintf("Reconcile is ok (%s) %s", dateNow, req.Name))
 		webAppCrd.Status.Status = "SUCCESS"
 		webAppCrd.Status.LastUpdate = dateNow
-		webAppCrd.Status.DeployedVersion = deployedPackage
+		webAppCrd.Status.DeployedVersion = webAppCrd.Spec.VersionToDeploy
 		webAppCrd.Status.Error = ""
 	}
 

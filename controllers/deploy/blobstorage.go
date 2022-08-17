@@ -31,6 +31,10 @@ func GetDeployedPackageVersion(deploymentParams Parameters, azureClientSecret *a
 		resp := pager.PageResponse()
 		for _, v := range resp.ListBlobsFlatSegmentResponse.Segment.BlobItems {
 			if *v.Name == *deploymentParams.FileNameToCheck {
+				if v.BlobTags == nil {
+					return "", errors.New(fmt.Sprintf("Unable to find %s tag in %s file (Container %s Storage Account %s)", *deploymentParams.BlobTagKey, *deploymentParams.FileNameToCheck, *deploymentParams.ContainerName, *deploymentParams.StorageName))
+				}
+
 				for _, tag := range v.BlobTags.BlobTagSet {
 					if *tag.Key == *deploymentParams.BlobTagKey {
 						return *tag.Value, nil

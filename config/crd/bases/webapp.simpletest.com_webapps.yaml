@@ -59,8 +59,10 @@ spec:
               azureTenantId:
                 type: string
               blobTagKey:
+                default: version
                 type: string
               containerName:
+                default: $web
                 type: string
               filenameToCheck:
                 default: index.html
@@ -78,10 +80,6 @@ spec:
             - azureSpnId
             - azureSpnSecret
             - azureTenantId
-            - blobTagKey
-            - containerName
-            - filenameToCheck
-            - packageContainerName
             - packageStorageName
             - storageName
             - versionToDeploy

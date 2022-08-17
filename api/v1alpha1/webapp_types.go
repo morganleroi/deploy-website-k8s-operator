@@ -25,24 +25,28 @@ import (
 
 // WebappSpec defines the desired state of Webapp
 type WebappSpec struct {
-	//+kubebuilder:validation:Required
+	// +kubebuilder:validation:Required
 	AzureTenantId string `json:"azureTenantId"`
-	//+kubebuilder:validation:Required
+	// +kubebuilder:validation:Required
 	AzureSpnId string `json:"azureSpnId"`
-	//+kubebuilder: validation:Required
+	// +kubebuilder:validation:Required
 	AzureSpnSecret string `json:"azureSpnSecret"`
-	//+kubebuilder:validation:Required
+	// +kubebuilder:validation:Required
 	StorageName string `json:"storageName"`
-	// +kubebuilder: default:=$web
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:default:=$web
 	ContainerName string `json:"containerName"`
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default:=index.html
 	FileNameToCheck string `json:"filenameToCheck"`
-	// +kubebuilder: default:=version
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:default:=version
 	BlobTagKey string `json:"blobTagKey"`
-	//+kubebuilder:validation: Required
+	// +kubebuilder:validation:Required
 	VersionToDeploy string `json:"versionToDeploy"`
-	//+kubebuilder:validation:Required
+	// +kubebuilder:validation:Required
 	PackageStorageName string `json:"packageStorageName"`
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default:=packages
 	PackageContainerName string `json:"packageContainerName"`
 }

@@ -21,6 +21,8 @@ import (
 	"fmt"
 	webappv1alpha1 "github.com/morganleroi/deploy-website-k8s-operator/api/v1alpha1"
 	"github.com/morganleroi/deploy-website-k8s-operator/controllers/deploy"
+	"k8s.io/apimachinery/pkg/api/meta"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -69,22 +71,39 @@ func (r *WebappReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 
 	err = deploy.StartDeployment(deploymentParameters)
 
+	var condition v1.Condition
+
 	dateNow := time.Now().Format(time.Layout)
 	if err != nil {
 		log.Log.Info(fmt.Sprintf("Fail to reconcile (%s) %s - %s", dateNow, req.Name, err))
 		webAppCrd.Status.Status = "ERROR"
-		webAppCrd.Status.LastUpdate = dateNow
-		webAppCrd.Status.Error = fmt.Sprintf("Error happened: %s", err)
+		condition = v1.Condition{
+			Type:    "Degraded",
+			Status:  v1.ConditionFalse,
+			Reason:  "DeploymentFailed",
+			Message: "",
+		}
 	} else {
 		log.Log.Info(fmt.Sprintf("Reconcile is ok (%s) %s", dateNow, req.Name))
 		webAppCrd.Status.Status = "SUCCESS"
-		webAppCrd.Status.LastUpdate = dateNow
 		webAppCrd.Status.DeployedVersion = webAppCrd.Spec.VersionToDeploy
-		webAppCrd.Status.Error = ""
+		condition = v1.Condition{
+			Type:    "Available",
+			Status:  v1.ConditionTrue,
+			Reason:  "Deployed",
+			Message: "",
+		}
 	}
 
-	err = r.Status().Update(ctx, webAppCrd)
+	meta.SetStatusCondition(&webAppCrd.Status.Conditions, condition)
+	errStatusUpdate := r.Status().Update(ctx, webAppCrd)
+
+	if errStatusUpdate != nil {
+		return ctrl.Result{}, err
+	}
+
 	if err != nil {
+		log.Log.Info("Ending reconciliation")
 		return ctrl.Result{}, err
 	}
 

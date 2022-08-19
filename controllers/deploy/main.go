@@ -23,11 +23,11 @@ func StartDeployment(deploymentParams Parameters) error {
 
 	if *deploymentParams.VersionToDeploy == deployedPackageVersion {
 		PrintHeaderToConsole("Deployment result")
-		fmt.Printf("The deployed package (%s) is the same as the one you want to deploy (%s). Nothing to do. \n", deployedPackageVersion, *deploymentParams.VersionToDeploy)
+		fmt.Printf("The deployed package (%s) found in storage account %s is the same as the one you want to deploy (%s). Nothing to do. \n", deployedPackageVersion, *deploymentParams.StorageName, *deploymentParams.VersionToDeploy)
 		return nil
 	}
 
-	fmt.Printf("The deployed package (%s) is different from the one you want to deploy (%s). Let's deploy it ! \n", deployedPackageVersion, *deploymentParams.VersionToDeploy)
+	fmt.Printf("The deployed package (%s) found in storage account %s is different from the one you want to deploy (%s). Let's deploy it ! \n", deployedPackageVersion, *deploymentParams.StorageName, *deploymentParams.VersionToDeploy)
 
 	err = Deploy(deploymentParams, credential)
 	if err != nil {

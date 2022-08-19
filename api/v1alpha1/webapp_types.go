@@ -57,8 +57,9 @@ type WebappStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	Status          string `json:"status"`
 	DeployedVersion string `json:"deployed-version"`
-	Error           string `json:"error"`
-	LastUpdate      string `json:"last-update"`
+	//Error           string             `json:"error"`
+	//LastUpdate      string             `json:"last-update"`
+	Conditions []metav1.Condition `json:"conditions"`
 }
 
 //+kubebuilder:object:root=true
@@ -66,7 +67,6 @@ type WebappStatus struct {
 //+kubebuilder:printcolumn:name="Status",type="string",JSONPath=".status.status",description="The status of the last sync"
 //+kubebuilder:printcolumn:name="Current Deployed Version",type="string",JSONPath=".status.deployed-version",description="The version currently deployed"
 //+kubebuilder:printcolumn:name="Desired Version",type="string",JSONPath=".spec.webappversion",description="The desired version"
-//+kubebuilder:printcolumn:name="Error",type="string",JSONPath=".status.error",description="Potential error during reconciliation"
 // Webapp is the Schema for the webapps API
 type Webapp struct {
 	metav1.TypeMeta   `json:",inline"`

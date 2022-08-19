@@ -13,14 +13,16 @@ import (
 func GetDeployedPackageVersion(deploymentParams Parameters, azureClientSecret *azidentity.ClientSecretCredential) (string, error) {
 	defer declareNewStep("Checking current deployed version")()
 
+	fmt.Printf("Trying to find the value of the blobKey '%s' in the '%s' file located in the storage '%s/%s'\n", *deploymentParams.BlobTagKey, *deploymentParams.FileNameToCheck, *deploymentParams.StorageName, *deploymentParams.ContainerName)
+
 	serviceClient, err := azblob.NewServiceClient(fmt.Sprintf("https://%s.%s/", *deploymentParams.StorageName, AzureBlobDomain), azureClientSecret, nil)
 	if err != nil {
-		return "", fmt.Errorf("unable to create a storage account client for %s with error %v", *deploymentParams.ContainerName, err)
+		return "", fmt.Errorf("unable to create a storage account client for %s with error %v\n", *deploymentParams.ContainerName, err)
 	}
 
 	client, err := serviceClient.NewContainerClient(*deploymentParams.ContainerName)
 	if err != nil {
-		return "", fmt.Errorf("unable to get %s container on storage account %s with error: %v", *deploymentParams.ContainerName, *deploymentParams.StorageName, err)
+		return "", fmt.Errorf("unable to get %s container on storage account %s with error: %v\n", *deploymentParams.ContainerName, *deploymentParams.StorageName, err)
 	}
 
 	pager := client.ListBlobsFlat(&azblob.ContainerListBlobsFlatOptions{
@@ -32,15 +34,16 @@ func GetDeployedPackageVersion(deploymentParams Parameters, azureClientSecret *a
 		for _, v := range resp.ListBlobsFlatSegmentResponse.Segment.BlobItems {
 			if *v.Name == *deploymentParams.FileNameToCheck {
 				if v.BlobTags == nil {
-					return "", errors.New(fmt.Sprintf("Unable to find %s tag in %s file (Container %s Storage Account %s)", *deploymentParams.BlobTagKey, *deploymentParams.FileNameToCheck, *deploymentParams.ContainerName, *deploymentParams.StorageName))
+					return "", errors.New(fmt.Sprintf("Unable to find %s tag in %s file (Container %s Storage Account %s)\n", *deploymentParams.BlobTagKey, *deploymentParams.FileNameToCheck, *deploymentParams.ContainerName, *deploymentParams.StorageName))
 				}
 
 				for _, tag := range v.BlobTags.BlobTagSet {
 					if *tag.Key == *deploymentParams.BlobTagKey {
+						fmt.Printf("Successfully found a blobKey '%s' in '%s/%s/%s' with the value %s\n", *deploymentParams.BlobTagKey, *deploymentParams.StorageName, *deploymentParams.ContainerName, *deploymentParams.FileNameToCheck, *tag.Value)
 						return *tag.Value, nil
 					}
 				}
-				return "", errors.New(fmt.Sprintf("Unable to find %s tag in %s file (Container %s Storage Account %s)", *deploymentParams.BlobTagKey, *deploymentParams.FileNameToCheck, *deploymentParams.ContainerName, *deploymentParams.StorageName))
+				return "", errors.New(fmt.Sprintf("Unable to find %s tag in %s file (Container %s Storage Account %s)\n", *deploymentParams.BlobTagKey, *deploymentParams.FileNameToCheck, *deploymentParams.ContainerName, *deploymentParams.StorageName))
 			}
 		}
 	}
@@ -85,8 +88,7 @@ func downloadPackage(deploymentParameters Parameters, azureClientSecret *azident
 	}
 
 	downloadedData := &bytes.Buffer{}
-	options := &azblob.RetryReaderOptions{}
-	reader := get.Body(options)
+	reader := get.Body(&azblob.RetryReaderOptions{})
 	_, err = downloadedData.ReadFrom(reader)
 	if err != nil {
 		return nil, fmt.Errorf("unable to download %s file package with error: %v", zipName, err)
